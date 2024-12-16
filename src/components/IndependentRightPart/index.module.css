@@ -1,0 +1,29 @@
+.scroll_bar {
+    scrollbar-width: middle; /* 适用于 Firefox */
+    scrollbar-color: gray transparent; /* 适用于 Firefox */
+
+  --show-top-mask: 1;
+  --show-bottom-mask: 1;
+  --mask-size: 1rem;
+  --gradient: linear-gradient(to bottom, transparent 0%,
+  white calc(var(--show-top-mask) * var(--mask-size)),
+  white calc(100% - calc(var(--mask-size)*var(--show-bottom-mask))),
+   transparent 100%);
+  -webkit-mask: var(--gradient);
+  mask: var(--gradient);
+}
+
+/* 适用于 WebKit 浏览器（Chrome, Safari, Edge） */
+.scroll_bar::-webkit-scrollbar {
+    width: 12px;
+}
+
+.scroll_bar::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+.scroll_bar::-webkit-scrollbar-thumb {
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    border: 3px solid #ffffff;
+}

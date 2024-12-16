@@ -1,0 +1,16 @@
+.markdown-body {
+    box-sizing: border-box;
+    background-color: transparent;
+
+    --color-fg-default: white;
+    --color-canvas-default: red;
+    --clock-bg-100: rgba(243, 244, 246, 1);
+    --clock-bg-200: rgba(229, 231, 235, 1);
+    --clock-bg-300: rgba(209, 213, 219, 1);
+    --clock-bg-400: rgba(156, 163, 175, 1);
+    --clock-bg-500: rgba(107, 114, 128, 1);
+    --clock-bg-600: rgba(75, 85, 99, 1);
+    --clock-bg-700: rgba(55, 65, 81, 1);
+    --clock-bg-800: rgba(31, 41, 55, 1);
+    --clock-bg-900: rgba(17, 24, 39, 1);
+}

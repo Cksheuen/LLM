@@ -1,0 +1,13 @@
+.ellipsis {
+    width: 100%;
+}
+
+.ellipsis * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conversation:hover .icon {
+    opacity: 1;
+}

@@ -1,0 +1,8 @@
+.icon .description {
+    opacity: 0;
+    white-space: nowrap;
+}
+
+.icon:hover .description {
+    opacity: 1;
+}

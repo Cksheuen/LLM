@@ -1,0 +1,68 @@
+{
+  "app": {
+    "description": "Hduer’s exclusive tool platform",
+    "title": "Comprehensive evaluation management backend"
+  },
+  "feedback": {
+    "chat": "Platform customer service",
+    "website": "feedback"
+  },
+  "login": {
+    "callbackChecking": "Third-party information is being verified",
+    "callbackError": "Third-party information verification failed",
+    "callbackInit": "Third-party information verification is in preparation",
+    "callbackValid": "Third-party information verification successful",
+    "loginedWarning": "It seems that you are already logged in. There is no need to log in again. You can choose to use this account or log in to another account.",
+    "loginedWarningTitle": "🔔 Tips",
+    "resetUser": "Log in to other accounts",
+    "reuseAccount": "Continue to use this account",
+    "selectMethod": "Please select login method",
+    "title": "Unified authentication login"
+  },
+  "logout": {
+    "confirm": {
+      "message": "Do you want to log out of this account?",
+      "title": "⚠️Exit confirmation"
+    }
+  },
+  "menu": {
+    "docs": "Document",
+    "help": "Help",
+    "home": "Home page",
+    "semi": "Semi"
+  },
+  "project": {
+    "create": {
+      "basic": "Basic Information",
+      "config": "Configuration",
+      "desc": {
+        "label": "project description",
+        "required": "Please enter project description"
+      },
+      "initData": {
+        "label": "Generate initial data",
+        "wrap": "other"
+      },
+      "name": {
+        "label": "project name",
+        "required": "Please enter project name"
+      },
+      "title": "Create new project",
+      "type": {
+        "collection": {
+          "extra": "It is suitable for collection projects, such as individual scholarship selections, etc., and the results will eventually be presented in the form of collected data.",
+          "name": "Collection items"
+        },
+        "label": "project type",
+        "required": "Please select project type",
+        "score": {
+          "extra": "Suitable for projects involving complex score calculations, such as comprehensive assessments, etc., where the results will eventually be presented in the form of scores.",
+          "name": "Fractional items"
+        }
+      }
+    },
+    "list": {
+      "title": "Project list"
+    }
+  }
+}

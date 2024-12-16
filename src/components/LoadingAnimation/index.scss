@@ -1,0 +1,125 @@
+$russian-violet: #110d31ff;
+$light-coral: rgb(255 255 255);
+$size: 80px;
+$animation-duration: 2s;
+
+.scene {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: $size * 2.75;
+  height: $size * 2.75;
+  place-items: center;
+}
+
+.cube-wrapper {
+  transform-style: preserve-3d;
+  animation: bouncing $animation-duration infinite;
+}
+
+.cube {
+  transform: rotateX(45deg) rotateZ(45deg);
+  transform-style: preserve-3d;
+  animation: rotation $animation-duration infinite;
+}
+
+.cube-faces {
+  position: relative;
+  width: $size;
+  height: $size;
+  transform: translateX(0) translateY(0) translateZ(calc(-1 * $size / 2));
+  transform-origin: 0 0;
+  transform-style: preserve-3d;
+}
+
+.cube-face {
+  position: absolute;
+  inset: 0;
+  background: $russian-violet;
+  border: solid 1px $light-coral;
+
+  &.shadow {
+    transform: translateZ(-$size);
+    animation: bouncing-shadow $animation-duration infinite;
+  }
+
+  &.top {
+    transform: translateZ($size);
+  }
+
+  &.front {
+    transform: rotateY(-90deg);
+    transform-origin: 0 50%;
+  }
+
+  &.back {
+    transform: rotateY(-90deg) translateZ(-$size);
+    transform-origin: 0 50%;
+  }
+
+  &.right {
+    transform: rotateX(-90deg) translateY(-$size);
+    transform-origin: 50% 0;
+  }
+
+  &.left {
+    transform: rotateX(-90deg) translateY(-$size) translateZ($size);
+    transform-origin: 50% 0;
+  }
+}
+
+@keyframes rotation {
+  $start: 45deg;
+
+  0% {
+    transform: rotateX($start) rotateY(0) rotateZ($start);
+    animation-timing-function: cubic-bezier(0.17, 0.84, 0.44, 1);
+  }
+
+  50% {
+    transform: rotateX($start) rotateY(0) rotateZ($start + calc(360 / 2));
+    animation-timing-function: cubic-bezier(0.76, 0.05, 0.86, 0.06);
+  }
+
+  100% {
+    transform: rotateX($start) rotateY(0) rotateZ($start + 360);
+    animation-timing-function: cubic-bezier(0.17, 0.84, 0.44, 1);
+  }
+}
+
+@keyframes bouncing {
+  0% {
+    transform: translateY(-$size * 0.5);
+    animation-timing-function: cubic-bezier(0.76, 0.05, 0.86, 0.06);
+  }
+
+  45% {
+    transform: translateY($size * 0.5);
+    animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  100% {
+    transform: translateY(-$size * 0.5);
+    animation-timing-function: cubic-bezier(0.76, 0.05, 0.86, 0.06);
+  }
+}
+
+@keyframes bouncing-shadow {
+  0% {
+    transform: translateZ(-$size) scale(1.3);
+    opacity: 0.05;
+    animation-timing-function: cubic-bezier(0.76, 0.05, 0.86, 0.06);
+  }
+
+  45% {
+    transform: translateZ(0);
+    opacity: 0.3;
+    animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  100% {
+    transform: translateZ(-$size) scale(1.3);
+    opacity: 0.05;
+    animation-timing-function: cubic-bezier(0.76, 0.05, 0.86, 0.06);
+  }
+}
