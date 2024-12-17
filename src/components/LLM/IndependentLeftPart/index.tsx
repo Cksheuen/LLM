@@ -1,14 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import IndependentConversationList from '../IndependentConversationList';
-import ConversationListEl, { SpaceBotsAnimateCon } from '@/type.d/Conversation';
-import { SimpleBot } from '@/type.d/bot';
 import { useConversationListStore } from '@/store/conversationList';
 import { createConversation } from '@/api/conversation';
-import {
-  EnterMessageObj,
-  ConversationObj,
-  CreateConversationData,
-} from '@/type.d/Conversation';
 import { useNavigate } from 'react-router-dom';
 import { useConversationStore } from '@/store/conversation';
 

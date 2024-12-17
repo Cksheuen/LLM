@@ -19,6 +19,8 @@ export default defineConfig({
       'icon-btn',
       'inline-block cursor-pointer select-none opacity-75 transition duration-200 ease-in-out hover:opacity-100 hover:text-teal-600',
     ],
+    ['shadow-box', 'shadow bg-white p-5 rd-3'],
+    ['dialog-box', 'w-100 bg-gray-5 rd-5 p-5 pr-10 relative text-white line-height-normal shadow-gray-4 shadow']
   ],
   presets: [
     presetUno(),

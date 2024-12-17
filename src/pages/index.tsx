@@ -1,4 +1,4 @@
-import IndependentDialogBox from '@/components/IndependentDialogBox';
+import IndependentDialogBox from '@/components/LLM/IndependentDialogBox';
 import AuthorisationBtn from '@/components/AuthorisationBtn';
 import SpeechToText from '@/components/SpeechToText';
 import { useAuthorizationStore } from '@/store/authorisation';

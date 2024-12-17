@@ -7,7 +7,7 @@ import { useConversationStore } from '@/store/conversation';
 import style from './index.module.css';
 import { PublishedBotsList } from '@/type.d/space';
 import { CreateChatParams, StreamChat } from '@/type.d/chat';
-import SpeechToTextIcon from '../SpeechToText/icon';
+import SpeechToTextIcon from '../../SpeechToText/icon';
 
 interface DialogInputProps {
   sendMessage: (textarea: HTMLTextAreaElement) => void;

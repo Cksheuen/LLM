@@ -1,6 +1,6 @@
-import IndependentConversationHeader from '@/components/IndependentConversationHeader';
-import LLMConversation from '@/components/LLMConversation';
-import DialogInput from '@/components/DialogInput';
+import IndependentConversationHeader from '@/components/LLM/IndependentConversationHeader';
+import LLMConversation from '@/components/LLM/LLMConversation';
+import DialogInput from '@/components/LLM/DialogInput';
 import { useRef, useEffect, useState } from 'react';
 import style from './index.module.css';
 import { useConversationStore } from '@/store/conversation';

@@ -1,7 +1,5 @@
-import IndependentRightPart from "@/components/IndependentRightPart";
+import IndependentRightPart from '@/components/LLM/IndependentRightPart';
 
 export default function Conversation() {
-    return (
-        <IndependentRightPart />
-    )
+  return <IndependentRightPart />;
 }

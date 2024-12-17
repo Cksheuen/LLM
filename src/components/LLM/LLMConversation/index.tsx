@@ -6,8 +6,8 @@ import {
   RefObject,
 } from 'react';
 import LLMQA from '../LLMQA';
-import LLMAnswer from '@/components/LLMAnswer';
-import LLMAsk from '@/components/LLMAsk';
+import LLMAnswer from '@/components/LLM/LLMAnswer';
+import LLMAsk from '@/components/LLM/LLMAsk';
 import style from './index.module.css';
 import { useConversationStore } from '@/store/conversation';
 import { getMessageList } from '@/api/message';

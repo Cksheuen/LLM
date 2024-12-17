@@ -1,6 +1,5 @@
 import ConversationListEl from '@/type.d/Conversation';
 import style from './index.module.css';
-import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useConversationStore } from '@/store/conversation';
 
