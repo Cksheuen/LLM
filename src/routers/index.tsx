@@ -1,16 +1,22 @@
 import { createBrowserRouter, RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
-/* import Home from '@/pages/index';
-import Conversation from '@/pages/conversation'; */
+/* import Home from '@/pages/index';*/
+import NewConversation from '@/pages/conversation/new';
+import Conversation from '@/pages/conversation/details';
 
 const Home = lazy(() => import('@/pages/index'));
-const Conversation = lazy(() => import('@/pages/conversation'));
+// const NewConversation = lazy(() => import('@/pages/conversation/new'));
+// const Conversation = lazy(() => import('@/pages/conversation/details'));
 
 const routes: RouteObject[] = [
   {
     path: '/',
     element: <Home />,
     children: [
+      {
+        path: '',
+        element: <NewConversation />,
+      },
       {
         path: ':conversation',
         element: <Conversation />,

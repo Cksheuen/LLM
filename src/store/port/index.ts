@@ -1,104 +1,80 @@
 import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import { Pos } from '@/utils/math'
+import { isEqual, Pos } from '@/utils/math'
+import { ReactNode } from 'react';
+import { RectProps } from '@/utils/math';
 
 interface Node {
   index: number;
-  node: string;
-  pos: Pos;
+  rect: RectProps;
   props: any;
-  funcs: any;
+  element: () => ReactNode
 }
 
 interface ElMap {
-  status: number;
   id: string;
-  pos: Pos;
   nodes: Node[];
 }
 
 interface PortState {
   status: number
-  pos: Pos | null;
+  update: boolean
   content: string;
   elMaps: ElMap[];
   closeIndex: number;
   setNewPos: (new_pos: Pos) => void;
   updateStatus: (status: number) => void;
-  addProps: (id: string, pos: Pos, node: Node) => void;
-  activePort: (id: string, index: number) => void;
-  closePort: (id: string) => void;
-  initAll: () => void;
+  updateElmaps: (id: string, node: Node) => void;
+  activePort: (id: string) => void;
+  finishUpdate: () => void;
+  closePort: (id: string, rect: RectProps) => void;
 }
 
 export const usePortStore = create<PortState>()(
-  devtools(
-    persist(
-      (set, get) => ({
-        status: -1,
-        pos: null,
-        elMaps: [],
-        content: 'Record',
-        closeIndex: -1,
-        updateStatus: (status: number) => {
-          set((state: PortState) => ({ ...state, status }))
-        },
-        setNewPos: (new_pos: Pos) => {
-          set((state: PortState) => ({ ...state, pos: new_pos }))
-        },
-        setContent: (content: string) =>
-          set((state: PortState) => ({ ...state, content })),
-        addProps: (id: string, pos: Pos, node: Node) => {
-          const newElmaps = get().elMaps;
-          const index = newElmaps.findIndex((el) => el.id === id);
-          if (index === -1) {
-            newElmaps.push({ status: -1, id, pos, nodes: [node] });
-          } else {
-            const i = newElmaps[index].nodes.findIndex((n) => n.index === node.index);
-            if (i !== -1) {
-              newElmaps[index].nodes[i] = node;
-            } else {
-              newElmaps[index].nodes.push(node);
-            }
-          }
-          if (!pos) {
-            pos = newElmaps[0].pos;
-          }
-          // return { ...state, elMaps: newElmaps };
-          set((state: PortState) => ({ ...state, elMaps: newElmaps, pos }));
-          // get().activePort(id, node.index);
-        },
-        activePort: (id: string, index: number) => {
-
-          const newElmaps = [...get().elMaps];
-          const index_ = newElmaps.findIndex((el) => el.id === id);
-          newElmaps[index_].status = index;
-          set((state: PortState) => ({ ...state, elMaps: newElmaps, status: index_ }));
-          // newElmaps[index_].pos = newElmaps[index_].nodes[index].pos;
-        },
-        closePort: (id: string) => {
-          const newElmaps = get().elMaps;
-          const index = newElmaps.findIndex((el) => el.id === id);
-          newElmaps[index].status = -1;
-          set((state: PortState) => ({ ...state, elMaps: newElmaps, status: -1, closeIndex: index }));
-          setTimeout(() => {
-            set((state: PortState) => ({ ...state, closeIndex: -1 }));
-
-          }, 0);
-        },
-        initAll: () =>
-          set((_state: PortState) => ({
-            status: -1,
-            pos: null,
-            elMaps: [],
-            content: 'Record',
-            closeIndex: -1,
-          })),
-
-      }),
-      {
-        name: 'port',
-      },
-    ),
-  ),
+  (set, get) => ({
+    status: -1,
+    update: false,
+    pos: null,
+    elMaps: [],
+    content: 'Record',
+    closeIndex: -1,
+    updateStatus: (status: number) => {
+      set((state: PortState) => ({ ...state, status }))
+    },
+    setNewPos: (new_pos: Pos) => {
+      set((state: PortState) => ({ ...state, pos: new_pos }))
+    },
+    setContent: (content: string) =>
+      set((state: PortState) => ({ ...state, content })),
+    updateElmaps: (id: string, node: Node) => {
+      const newElmaps = get().elMaps;
+      const index = newElmaps.findIndex((el) => el.id === id);
+      if (index === -1) {
+        newElmaps.push({ id, nodes: [node] });
+      } else {
+        const nodeIndex = newElmaps[index].nodes.findIndex((el) => isEqual(el.rect, node.rect));
+        if (nodeIndex !== -1) {
+          newElmaps[index].nodes.slice(nodeIndex, 1);
+        }
+        newElmaps[index].nodes.push(node);
+        // newElmaps[index].node = node
+      }
+      /* if (!pos) {
+        pos = newElmaps[0].pos;
+      } */
+      // return { ...state, elMaps: newElmaps };
+      set((state: PortState) => ({ ...state, elMaps: newElmaps, status: index !== -1 ? index : newElmaps.length }));
+      // get().activePort(id, node.index);
+    },
+    activePort: (id: string) => {
+      const index = get().elMaps.findIndex((el) => el.id === id);
+      set((state: PortState) => ({ ...state, status: index, update: true }));
+    },
+    finishUpdate: () => set((state: PortState) => ({ ...state, update: false })),
+    closePort: (id: string, rect: RectProps) => {
+      const index = get().elMaps.findIndex((el) => el.id === id);
+      const newElmaps = get().elMaps;
+      newElmaps[index].nodes = newElmaps[index].nodes.filter((el) => !isEqual(el.rect, rect));
+      set((state) => ({ ...state, elMaps: newElmaps, update: true }))
+    },
+  }),
 );

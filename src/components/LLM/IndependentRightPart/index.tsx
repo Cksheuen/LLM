@@ -7,6 +7,7 @@ import { useConversationStore } from '@/store/conversation';
 import { StreamChat, CreateChatParams } from '@/type.d/chat';
 import { MessageObj } from '@/type.d/message';
 import { createChatStream } from '@/api/chat';
+import PortIn from '@/components/Port/portIn';
 
 export default function IndependentRightPart() {
   const container = useRef<HTMLDivElement>(null);
@@ -208,7 +209,10 @@ export default function IndependentRightPart() {
         userAddNewChatRef={userAddNewChatRef}
       />
       {/* </div> */}
-      <DialogInput sendMessage={sendMessage} />
+
+      <PortIn id="conversation" index={1}>
+        <DialogInput sendMessage={sendMessage} />
+      </PortIn>
     </>
   );
 }

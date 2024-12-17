@@ -60,16 +60,23 @@ export default function IndependentLeftPart() {
     <div className="bg-gray-7 shadow-gray-9 flex h-full w-full max-w-[20rem] flex-col justify-between p-5 shadow shadow-xl">
       <div className="flex flex-col gap-4 gap-6">
         <div className="title text-5 flex w-full items-center justify-between">
-          <span>LLM</span>
+          <span
+            className="cursor-pointer"
+            onClick={() => {
+              navigate('/');
+            }}
+          >
+            LLM
+          </span>
           <span className="i-carbon-page-first text-3" />
         </div>
-        <div
+        {/* <div
           className="new text-4 text-red-6 justify-left hover:text-red-5 flex cursor-pointer items-center gap-1 transition-all"
           onClick={addConversation}
         >
           <span className="i-carbon-add-comment inline-block" />
           <span>Start new chat</span>
-        </div>
+        </div> */}
         <div className="starred flex flex-col gap-3">
           <div className="text-4 text-left">Starred</div>
           {starred.length === 0 ? (
