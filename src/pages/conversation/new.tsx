@@ -23,7 +23,7 @@ export default function Conversation() {
   };
 
   return (
-    <PortIn id="conversation" index={0}>
+    <PortIn id="conversation" className="w-full px-10">
       <DialogInput sendMessage={addNewConversation} />
     </PortIn>
   );

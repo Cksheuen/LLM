@@ -4,7 +4,6 @@ import { ReactNode } from 'react';
 import { RectProps } from '@/utils/math';
 
 interface Node {
-  index: number;
   rect: RectProps;
   props: any;
   element: () => ReactNode
@@ -16,13 +15,12 @@ interface ElMap {
 }
 
 interface PortState {
-  status: number
+  status: Set<number>
   update: boolean
   content: string;
   elMaps: ElMap[];
   closeIndex: number;
   setNewPos: (new_pos: Pos) => void;
-  updateStatus: (status: number) => void;
   updateElmaps: (id: string, node: Node) => void;
   activePort: (id: string) => void;
   finishUpdate: () => void;
@@ -31,15 +29,12 @@ interface PortState {
 
 export const usePortStore = create<PortState>()(
   (set, get) => ({
-    status: -1,
+    status: new Set(),
     update: false,
     pos: null,
     elMaps: [],
     content: 'Record',
     closeIndex: -1,
-    updateStatus: (status: number) => {
-      set((state: PortState) => ({ ...state, status }))
-    },
     setNewPos: (new_pos: Pos) => {
       set((state: PortState) => ({ ...state, pos: new_pos }))
     },
@@ -62,14 +57,25 @@ export const usePortStore = create<PortState>()(
         pos = newElmaps[0].pos;
       } */
       // return { ...state, elMaps: newElmaps };
-      set((state: PortState) => ({ ...state, elMaps: newElmaps, status: index !== -1 ? index : newElmaps.length }));
+      set((state: PortState) => ({
+        ...state, elMaps: newElmaps, status:
+          new Set([...Array.from(state.status), index !== -1 ? index : newElmaps.length - 1])
+      }));
+      // console.log('updateElmaps', get().elMaps);
+
       // get().activePort(id, node.index);
     },
     activePort: (id: string) => {
+      console.log('activePort', id);
+
       const index = get().elMaps.findIndex((el) => el.id === id);
-      set((state: PortState) => ({ ...state, status: index, update: true }));
+      set((state: PortState) => ({ ...state, status: new Set([...Array.from(state.status), index]), update: true }));
     },
-    finishUpdate: () => set((state: PortState) => ({ ...state, update: false })),
+    finishUpdate: () => {
+      console.log("finishUpdate");
+
+      set((state: PortState) => ({ ...state, update: false }))
+    },
     closePort: (id: string, rect: RectProps) => {
       const index = get().elMaps.findIndex((el) => el.id === id);
       const newElmaps = get().elMaps;

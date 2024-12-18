@@ -13,10 +13,16 @@ import { Timeout } from 'ahooks/lib/useRequest/src/types';
 interface PortInProps {
   children: ReactNode;
   id: string;
-  index: number;
+  className?: string;
+  [key: string]: any;
 }
 
-export default function PortIn({ children, id, index, ...props }: PortInProps) {
+export default function PortIn({
+  children,
+  id,
+  className,
+  ...props
+}: PortInProps) {
   const childrenRef = useRef<HTMLElement>(null);
   const ChildrenPos = useRef<Pos | null>(null);
   const status = usePortStore((state) => state.status);
@@ -27,17 +33,20 @@ export default function PortIn({ children, id, index, ...props }: PortInProps) {
   const closePort = usePortStore((state) => state.closePort);
   const propsData = useRef<any>(null);
   function getPosOfChildren(node: ReactNode): ReactNode {
-    // let node = children;
     if (isValidElement(node)) {
       if (typeof node.type === 'function') {
-        children = <div>{children}</div>;
+        children = (
+          <div className={className} {...props} id="PortInContainer">
+            {children}
+          </div>
+        );
         node = children;
       }
 
       return cloneElement(node, {
         ref: childrenRef,
         style: {
-          opacity: '100',
+          opacity: '0',
         },
       });
     }
@@ -58,7 +67,6 @@ export default function PortIn({ children, id, index, ...props }: PortInProps) {
       propsData.current = {
         id,
         node: {
-          index,
           rect: {
             top: rect.top,
             left: rect.left,
@@ -87,7 +95,7 @@ export default function PortIn({ children, id, index, ...props }: PortInProps) {
   }, [childrenRef.current]);
 
   useEffect(() => {
-    console.log('useEffect ', id, ' updated');
+    console.log('useEffect ', id, ' updated', propsData.current.node.rect);
     return () => {
       closePort(id, propsData.current.node.rect);
     };
@@ -98,30 +106,32 @@ export default function PortIn({ children, id, index, ...props }: PortInProps) {
   const timers = useRef<Timeout[]>([]);
 
   useEffect(() => {
-    if (status !== -1 && id === elMaps[status].id && childrenRef.current) {
+    const statusArr = Array.from(status);
+    const exist = statusArr.findIndex((index) => elMaps[index].id === id);
+    if (statusArr.length !== 0 && exist !== -1 && childrenRef.current) {
       for (const timer of timers.current) {
         clearTimeout(timer);
       }
-      const el = elMaps[status];
+      const el = elMaps[statusArr[exist]];
 
       const newTimers = [];
 
       const elNodeRect = el.nodes[el.nodes.length - 1].rect;
 
-      console.log(
+      /* console.log(
         id,
         'change op',
         elNodeRect,
         propsData.current.node.rect,
         isEqual(elNodeRect, propsData.current.node.rect),
-      );
+      ); */
       /* if (el.nodes.length === 1) childrenRef.current.style.opacity = '100';
       else { */
       childrenRef.current.style.opacity = '0';
       if (isEqual(elNodeRect, propsData.current.node.rect)) {
         const timer = setTimeout(() => {
           childrenRef.current!.style.opacity = '100';
-        }, 600);
+        }, 500);
         newTimers.push(timer);
       }
       // }
@@ -129,5 +139,5 @@ export default function PortIn({ children, id, index, ...props }: PortInProps) {
       timers.current = newTimers;
     }
   }, [status, elMaps, update]);
-  return <div {...props}>{getPosOfChildren(children)}</div>;
+  return getPosOfChildren(children);
 }

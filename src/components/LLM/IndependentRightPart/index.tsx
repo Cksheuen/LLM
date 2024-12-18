@@ -210,7 +210,7 @@ export default function IndependentRightPart() {
       />
       {/* </div> */}
 
-      <PortIn id="conversation" index={1}>
+      <PortIn id="conversation" className="w-full px-10">
         <DialogInput sendMessage={sendMessage} />
       </PortIn>
     </>

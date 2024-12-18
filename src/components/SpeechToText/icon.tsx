@@ -52,7 +52,7 @@ export default function SpeechToTextIcon() {
   }, [status]);
 
   return (
-    <PortIn id="record" index={0}>
+    <PortIn id="record">
       <div
         className="i-carbon-microphone hover:text-gray-1 cursor-pointer"
         onClick={() => {

@@ -101,7 +101,7 @@ export default function SpeechToText() {
               startRecording ? 'flex-col-reverse' : 'flex-col'
             } items-center justify-center transition-all`}
           >
-            <PortIn id="record" index={1}>
+            <PortIn id="record">
               <div
                 id="port"
                 className={`i-carbon-microphone hover:text-gray-1 animate-duration-200 cursor-pointer transition-all ${
