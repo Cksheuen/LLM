@@ -17,6 +17,7 @@ export default function IndependentRightPart() {
     useRef<(newMessage: MessageObj) => void | null>(null);
   const selectedBotId = useConversationStore((state) => state.selectedBotId);
   const sendMsgByHook = UseCreateConversation().sendMessage;
+  const generateMessageObj = UseCreateConversation().generateMessageObj;
 
   useEffect(() => {
     if (container.current) {
@@ -27,18 +28,13 @@ export default function IndependentRightPart() {
   const sendMessage = async (textarea: HTMLTextAreaElement) => {
     if (!textarea || !textarea.value) return;
 
-    userAddNewChatRef.current?.({
-      id: '123',
-      conversation_id: conversation!.details.id!,
-      bot_id: selectedBotId!.bot_id!,
-      chat_id: '123',
-      role: 'user',
-      content: textarea.value,
-      content_type: 'text',
-      created_at: new Date().getTime(),
-      updated_at: new Date().getTime(),
-      type: 'question',
-    } as MessageObj);
+    const messageObj = generateMessageObj(
+      textarea.value,
+      conversation!.details.id!,
+      selectedBotId!.bot_id!,
+    );
+
+    userAddNewChatRef.current?.(messageObj);
 
     const streamChats = await sendMsgByHook(
       textarea.value,

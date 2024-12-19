@@ -69,7 +69,7 @@ export function UseCreateConversation() {
 
                 const index = resData.indexOf(matchKey[mi]);
                 const data = resData.slice(0, index).trim();
-                console.log(resData.length, index, data);
+                // console.log(resData.length, index, data);
                 if (data === 'event:done\ndata:"[DONE]"') break;
 
                 const sliceIndex = data.indexOf(':');
@@ -97,13 +97,13 @@ export function UseCreateConversation() {
                         .replace(/\"{/g, '{')
                         .replace(/\n/g, '\\n');
                 }
-                console.log(
+                /* console.log(
                     type,
                     content,
                     typeof content,
                     before,
                     content.indexOf('\\n'),
-                );
+                ); */
 
                 if (
                     streamChats.length === 0 ||
@@ -130,8 +130,24 @@ export function UseCreateConversation() {
         return streamChats;
     }
 
+    const generateMessageObj = (content: string, conversation_id: string, bot_id: string) => {
+        return {
+            id: '123',
+            conversation_id,
+            bot_id,
+            chat_id: '123',
+            role: 'user',
+            content,
+            content_type: 'text',
+            created_at: new Date().getTime(),
+            updated_at: new Date().getTime(),
+            type: 'question',
+        }
+    }
+
     return {
         addConversation,
-        sendMessage
+        sendMessage,
+        generateMessageObj
     }
 }

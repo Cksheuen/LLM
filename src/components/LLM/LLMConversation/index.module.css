@@ -1,32 +1,87 @@
 .container {
-    --show-top-mask: 1;
-    --show-bottom-mask: 1;
-    --mask-size: 1rem;
-    --gradient: linear-gradient(to bottom, transparent 0%,
+  --show-top-mask: 1;
+  --show-bottom-mask: 1;
+  --mask-size: 1rem;
+  --gradient: linear-gradient(
+    to bottom,
+    transparent 0%,
     white calc(var(--show-top-mask) * var(--mask-size)),
-    white calc(100% - calc(var(--mask-size)*var(--show-bottom-mask))),
-     transparent 100%);
-    -webkit-mask: var(--gradient);
-    mask: var(--gradient);
+    white calc(100% - calc(var(--mask-size) * var(--show-bottom-mask))),
+    transparent 100%
+  );
+  -webkit-mask: var(--gradient);
+  mask: var(--gradient);
 }
 
-
 .scroll_bar {
-    scrollbar-width: middle; /* 适用于 Firefox */
-    scrollbar-color: gray transparent; /* 适用于 Firefox */
+  scrollbar-width: thin; /* 适用于 Firefox */
+  scrollbar-color: gray transparent; /* 适用于 Firefox */
 }
 
 /* 适用于 WebKit 浏览器（Chrome, Safari, Edge） */
 .scroll_bar::-webkit-scrollbar {
-    width: 12px;
+  width: 12px;
 }
 
 .scroll_bar::-webkit-scrollbar-track {
-    background: #ffffff;
+  background: #ffffff;
 }
 
 .scroll_bar::-webkit-scrollbar-thumb {
-    background-color: #f1f1f1;
-    border-radius: 10px;
-    border: 3px solid #ffffff;
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  border: 3px solid #ffffff;
+}
+
+.load_wrapp {
+  float: left;
+  width: 200px;
+  height: 100px;
+  margin: 0 10px 10px 0;
+  padding: 20px 20px 20px;
+  border-radius: 5px;
+  text-align: center;
+  /* background-color: #d8d8d8; */
+  box-sizing: content-box;
+}
+
+.load_wrapp p {
+  padding: 0 0 20px;
+}
+.load_wrapp:last-child {
+  margin-right: 0;
+}
+
+.line {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  background-color: #9ca3af;
+}
+
+.load {
+  --loadingDuration: 1.5s;
+}
+
+.load .line:nth-last-child(1) {
+  animation: loadingB var(--loadingDuration) 1s infinite;
+}
+.load .line:nth-last-child(2) {
+  animation: loadingB var(--loadingDuration) 0.5s infinite;
+}
+.load .line:nth-last-child(3) {
+  animation: loadingB var(--loadingDuration) 0s infinite;
+}
+
+@keyframes loadingB {
+  0 {
+    width: 15px;
+  }
+  50% {
+    width: 35px;
+  }
+  100% {
+    width: 15px;
+  }
 }

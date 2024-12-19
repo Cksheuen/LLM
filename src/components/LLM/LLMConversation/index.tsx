@@ -4,6 +4,7 @@ import {
   useState,
   useImperativeHandle,
   RefObject,
+  Suspense,
 } from 'react';
 import LLMAnswer from '@/components/LLM/LLMAnswer';
 import LLMAsk from '@/components/LLM/LLMAsk';
@@ -91,30 +92,51 @@ export default function LLMConversation({
     setMessages((prev) => [...prev, newMessage]);
   });
 
+  useEffect(() => {
+    return () => {
+      setMessages([]);
+    };
+  }, [conversation]);
+
   return (
     <div
       ref={container}
-      className={`w-full flex-grow overflow-x-clip overflow-y-scroll ${style.scroll_bar} ${style.container}`}
+      className={`box-content w-full flex-grow overflow-x-clip overflow-y-scroll ${style.scroll_bar} ${style.container}`}
     >
-      <div
-        // ref={container}
-        className={`flex w-full flex-col items-center gap-10 pr-5 sm:p-10 md:p-20 lg:p-10 ${style.scroll_bar}`}
-      >
-        {messages.map((message, index) =>
-          message.role === 'user' ? (
-            <LLMAsk key={index} content={message.content} />
-          ) : (
-            <LLMAnswer key={index} content={message.content} />
-          ),
-        )}
-        {newChatContent && (
-          <LLMAnswer
-            streamChats={newChatContent}
-            setScrollBar={setScrollBar}
-            completeAddNewChat={completeAddNewChat}
-          />
-        )}
-      </div>
+      {messages.length === 0 ? (
+        <div className="flex h-full w-full items-center justify-center gap-1">
+          <div className={style.load_wrapp}>
+            <div className={style.load}>
+              <p className="text-gray-4">Loading......</p>
+              <div className="flex w-full items-center justify-center gap-1">
+                <div className={style.line}></div>
+                <div className={style.line}></div>
+                <div className={style.line}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div
+          // ref={container}
+          className={`flex w-full flex-col items-center gap-10 pr-5 sm:p-10 md:p-20 lg:p-10`}
+        >
+          {messages.map((message, index) =>
+            message.role === 'user' ? (
+              <LLMAsk key={index} content={message.content} />
+            ) : (
+              <LLMAnswer key={index} content={message.content} />
+            ),
+          )}
+          {newChatContent && (
+            <LLMAnswer
+              streamChats={newChatContent}
+              setScrollBar={setScrollBar}
+              completeAddNewChat={completeAddNewChat}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }
