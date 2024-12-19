@@ -5,6 +5,7 @@ export default interface ConversationListEl {
     details: ConversationObj
     del: boolean
     add: boolean
+    id: string
 }
 
 

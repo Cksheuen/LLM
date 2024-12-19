@@ -19,7 +19,7 @@ export default function IndependentLeftPart() {
     (state) => state.setConversation,
   );
 
-  const addConversation = async () => {
+  /* const addConversation = async () => {
     const res = await createConversation();
     const new_index = conversationList.length;
     console.log('res', res);
@@ -37,7 +37,7 @@ export default function IndependentLeftPart() {
     setTimeout(() => {
       setAddAttribute(false, new_index);
     }, 300);
-  };
+  }; */
 
   const initialLoad = useRef(true);
   useEffect(() => {

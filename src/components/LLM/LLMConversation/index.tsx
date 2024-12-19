@@ -5,16 +5,14 @@ import {
   useImperativeHandle,
   RefObject,
 } from 'react';
-import LLMQA from '../LLMQA';
 import LLMAnswer from '@/components/LLM/LLMAnswer';
 import LLMAsk from '@/components/LLM/LLMAsk';
 import style from './index.module.css';
 import { useConversationStore } from '@/store/conversation';
 import { getMessageList } from '@/api/message';
-import { useConversation } from '@/hooks/conversation';
-import { getConversation } from '@/api/conversation';
 import { MessageObj } from '@/type.d/message';
 import { StreamChat } from '@/type.d/chat';
+import { UseCreateConversation } from '@/hooks/conversation';
 
 interface LLMConversationProps {
   streamChatRef: RefObject<(streamChats: StreamChat[]) => void | null>;
@@ -27,12 +25,36 @@ export default function LLMConversation({
 }: LLMConversationProps) {
   const container = useRef<HTMLDivElement>(null);
   const conversation = useConversationStore((state) => state.conversation);
+  const selectedBotId = useConversationStore((state) => state.selectedBotId);
+  const sendMsgByHook = UseCreateConversation().sendMessage;
   const [messages, setMessages] = useState<MessageObj[]>([]);
   const getMessageListFunc = async () => {
     const res = await getMessageList({
-      conversation_id: conversation?.details.id!,
+      conversation_id: conversation!.details.id!,
     });
-    setMessages(res.data.sort((a, b) => a.created_at - b.created_at));
+    if (res.data.length > 0)
+      setMessages(res.data.sort((a, b) => a.created_at - b.created_at));
+    else {
+      const newMessage = {
+        id: '123',
+        conversation_id: conversation!.details.id!,
+        bot_id: selectedBotId!.bot_id!,
+        chat_id: '123',
+        role: 'user',
+        content: conversation!.title,
+        content_type: 'text',
+        created_at: new Date().getTime(),
+        updated_at: new Date().getTime(),
+        type: 'question',
+      } as MessageObj;
+      setMessages((prev) => [...prev, newMessage]);
+      const streamChats = await sendMsgByHook(
+        conversation!.title,
+        conversation!.details.id!,
+        selectedBotId!.bot_id!,
+      );
+      setNewChatContent(streamChats);
+    }
   };
   const [newChatContent, setNewChatContent] = useState<StreamChat[] | null>(
     null,
@@ -62,22 +84,12 @@ export default function LLMConversation({
   };
 
   useImperativeHandle(streamChatRef, () => (streamChats: StreamChat[]) => {
-    console.log('get stream chats', streamChats);
     setNewChatContent(streamChats);
   });
 
   useImperativeHandle(userAddNewChatRef, () => (newMessage: MessageObj) => {
     setMessages((prev) => [...prev, newMessage]);
   });
-
-  /* const acquireConversation = async () => {
-    const res = getConversation()
-    console.log(res);
-  }
-
-  useEffect(() => {
-
-  }) */
 
   return (
     <div

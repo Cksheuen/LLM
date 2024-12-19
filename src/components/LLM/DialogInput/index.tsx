@@ -56,7 +56,7 @@ export default function DialogInput({ sendMessage }: DialogInputProps) {
   }, []);
 
   return (
-    <div className="text-gray-3 relative w-full max-w-4xl p-5">
+    <div className="text-gray-3 relative mx-auto w-full max-w-4xl p-5">
       <textarea
         ref={textareaRef}
         className={`pr-15 rd-3 bg-gray-5 text-4 border-gray-6 focus-visible:ring-gray-7 text-gray-3 placeholder-gray-4 inline-block max-h-40 w-full resize-none overflow-y-auto border-solid p-3 pb-10 shadow-md focus-visible:outline-none focus-visible:ring-1 ${style.scroll_bar}`}
