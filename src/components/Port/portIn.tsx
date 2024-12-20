@@ -95,7 +95,7 @@ export default function PortIn({
   }, [childrenRef.current]);
 
   useEffect(() => {
-    console.log('useEffect ', id, ' updated', propsData.current.node.rect);
+    // console.log('useEffect ', id, ' updated', propsData.current.node.rect);
     return () => {
       closePort(id, propsData.current.node.rect);
     };
@@ -131,7 +131,7 @@ export default function PortIn({
       if (isEqual(elNodeRect, propsData.current.node.rect)) {
         const timer = setTimeout(() => {
           childrenRef.current!.style.opacity = '100';
-        }, 500);
+        }, 600);
         newTimers.push(timer);
       }
       // }

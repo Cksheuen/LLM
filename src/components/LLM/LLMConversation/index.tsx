@@ -14,6 +14,7 @@ import { getMessageList } from '@/api/message';
 import { MessageObj } from '@/type.d/message';
 import { StreamChat } from '@/type.d/chat';
 import { UseCreateConversation } from '@/hooks/conversation';
+import { LazyLoading } from '@/components/LoadingAnimation/LazyLoading';
 
 interface LLMConversationProps {
   streamChatRef: RefObject<(streamChats: StreamChat[]) => void | null>;
@@ -103,20 +104,7 @@ export default function LLMConversation({
       ref={container}
       className={`box-content w-full flex-grow overflow-x-clip overflow-y-scroll ${style.scroll_bar} ${style.container}`}
     >
-      {messages.length === 0 ? (
-        <div className="flex h-full w-full items-center justify-center gap-1">
-          <div className={style.load_wrapp}>
-            <div className={style.load}>
-              <p className="text-gray-4">Loading......</p>
-              <div className="flex w-full items-center justify-center gap-1">
-                <div className={style.line}></div>
-                <div className={style.line}></div>
-                <div className={style.line}></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
+      <LazyLoading loading={messages.length === 0}>
         <div
           // ref={container}
           className={`flex w-full flex-col items-center gap-10 pr-5 sm:p-10 md:p-20 lg:p-10`}
@@ -136,7 +124,7 @@ export default function LLMConversation({
             />
           )}
         </div>
-      )}
+      </LazyLoading>
     </div>
   );
 }

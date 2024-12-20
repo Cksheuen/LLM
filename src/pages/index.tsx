@@ -10,13 +10,13 @@ export default function Home() {
   const authorisation = useAuthorizationStore((state) => state.authorisation);
   const recordStatus = useRecordStore((state) => state.status);
 
-  useEffect(() => {
+  /* useEffect(() => {
     console.log(import.meta.env.PERSONAL_AUTH_TOKEN);
-  });
+  }); */
 
-  useEffect(() => {
+  /* useEffect(() => {
     console.log('recordStatus', recordStatus);
-  }, [recordStatus]);
+  }, [recordStatus]); */
   return (
     <div className="bg-gray-6 text-gray-3 flex h-full w-full flex-col items-center justify-center gap-5">
       <PortCarrier className="h-full w-full">

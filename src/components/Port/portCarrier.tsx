@@ -1,7 +1,13 @@
 import { usePortStore } from '@/store/port';
 import { Pos } from '@/utils/math';
 import { Timeout } from 'ahooks/lib/useRequest/src/types';
-import { useEffect, useRef, ReactNode, createElement, useState } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  ReactNode,
+  createElement,
+  useState,
+} from 'react';
 
 interface RecordProps {
   children: ReactNode;
@@ -25,6 +31,8 @@ export default function PortCarrier({ children, ...props }: RecordProps) {
   const [showEls, setShowEls] = useState<any[]>([]);
 
   const updateShowEls = async () => {
+    // console.log('latest elmaps', elMaps, elsContainer.current);
+
     if (elsContainer.current) {
       const observer = new MutationObserver(() => {
         if (
@@ -47,6 +55,8 @@ export default function PortCarrier({ children, ...props }: RecordProps) {
     }
 
     const setNewEls = () => {
+      // console.log('setNewEls', elMaps, status);
+
       const newEls = [...showEls];
 
       const statusArr = Array.from(status);
@@ -55,109 +65,84 @@ export default function PortCarrier({ children, ...props }: RecordProps) {
         const changedId = newEls.findIndex((el) => el.id === changedElsId);
         const elMap = elMaps[singleStatus];
         const el = elMap.nodes[elMap.nodes.length - 1];
-
-        // console.log(newEls, changedId, 'changed', elMap, el);
+        // console.log(changedElsId, changedId, elMap, el);
 
         if (changedId !== -1) {
-          newEls[changedId].node = el.element; // deserializeChildren(el.node);
-          newEls[changedId].rect = el.rect;
-          // newEls[changedId].display = 'block';
+          if (el.rect !== newEls[changedId]?.rect) {
+            // console.log(newEls, changedId, 'changed', elMap, el);
+            /* console.log(
+              'showEls changed',
+              changedElsId,
+              ' to update',
+              el.rect,
+              newEls[changedId]?.rect,
+            ); */
+
+            newEls[changedId].node = el.element; // deserializeChildren(el.node);
+            newEls[changedId].rect = el.rect;
+            newEls[changedId].display = 'block';
+            // newels[changeId].animation =
+          } /*  else {
+            // console.log('showEls not changed', changedElsId);
+
+            newEls[changedId].display = 'none';
+          } */
         } else {
           newEls.push({
             id: elMap.id,
             rect: el.rect,
             node: el.element, // deserializeChildren(el.node),
-            // display: 'block',
+            display: 'block',
           });
         }
       });
       setShowEls(newEls);
+      // console.log('newEls', newEls);
+
+      finishUpdate();
     };
   };
 
   const timer = useRef<Timeout | null>(null);
-  // const observerStatus = useRef<MutationRecord[]>();
-  const disconnectTimer = useRef<Timeout | null>(null);
+
+  const clearChildrenDisplay = () => {
+    const newEls = [...showEls];
+    newEls.forEach((el) => {
+      el.display = 'none';
+    });
+    console.log('clearChildrenDisplay', newEls);
+
+    // setShowEls(newEls);
+  };
 
   useEffect(() => {
     const observer = new MutationObserver(() => {
-      // observerStatus.current = mutations;
-      if (disconnectTimer.current) {
-        clearTimeout(disconnectTimer.current);
-      }
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
-      disconnectTimer.current = setTimeout(() => {
-        observer.disconnect();
-
+      if (elsContainer.current?.style.display === 'block') {
+        /* observer.observe(elsContainer.current, {
+          attributes: true,
+          childList: true,
+          subtree: true,
+        }); */
+        if (timer.current) {
+          clearTimeout(timer.current);
+        }
         timer.current = setTimeout(() => {
           if (elsContainer.current) elsContainer.current.style.display = 'none';
+          clearChildrenDisplay();
+
+          // setShowEls(newEls);
         }, 600);
-      }, 10);
+      }
     });
-    if (elsContainer.current?.style.display === 'block') {
-      /* observer.observe(elsContainer.current, {
-        attributes: true,
-        childList: true,
-        subtree: true,
-      }); */
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
-      timer.current = setTimeout(() => {
-        if (elsContainer.current) elsContainer.current.style.display = 'none';
-      }, 600);
-    }
-    /* const childListExist = observerStatus.current?.find(
-      (mutation) => mutation.type === 'childList',
-    );
-    console.log('childListExist', childListExist);
-
-    if (observerStatus.current && !childListExist) {
-      return () => {
-        observer.disconnect();
-        console.log('disconnect');
-      };
-    } */
-  }, [elsContainer.current?.style.display]);
-
-  /* useEffect(() => {
-    if (showElsInFact.length > 0) {
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
-      timer.current = setTimeout(() => {
-        setShowElsInFact([]);
-      }, 1000);
-    }
-  }, [showElsInFact]); */
-
-  /* useEffect(() => {
-    console.log('showElsInFact changed', showElsInFact, ' to observe');
-    const displayEls = showElsInFact.filter((el) => el.display === 'block');
-
-    if (displayEls.length > 0) {
-      console.log('showElsInFact changed', showElsInFact, ' to clear');
-
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
-      timer.current = setTimeout(() => {
-        console.log('clear', showElsInFact);
-        const newEls = [...showElsInFact];
-        for (const el of newEls) {
-          el.display = 'none';
-        }
-        setShowElsInFact(newEls);
-        if (elsContainer.current) elsContainer.current.style.opacity = '0';
-      }, 600);
-    }
-  }, [showElsInFact]); */
-
-  /*  useEffect(() => {
-    console.log('elsContainer changed', showEls);
-  }, [elsContainer.current]); */
+    observer.observe(elsContainer.current!, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+    });
+    return () => {
+      observer.disconnect();
+    };
+  }, [showEls]);
 
   useEffect(() => {
     if (Array.from(status).length === 0) {
@@ -167,16 +152,20 @@ export default function PortCarrier({ children, ...props }: RecordProps) {
       }
       return;
     }
-
     updateShowEls();
-  }, [status, elMaps]);
+  }, [status, elMaps, update]);
 
-  useEffect(() => {
+  /* useEffect(() => {
+    console.log('useeffect watch [update] changed', update);
+
     if (update) {
       updateShowEls();
-      finishUpdate();
+      // console.log('updateShowEls complete');
+
+      // finishUpdate();
     }
-  }, [update]);
+    // console.log('finish watch [update] changed', c);
+  }, [update]); */
 
   return (
     <div {...props}>
@@ -192,7 +181,7 @@ export default function PortCarrier({ children, ...props }: RecordProps) {
               height: el.rect.height + 'px',
               transition: 'top 0.6s ease, left 0.6s ease',
               // display: el.display,
-              // opacity: '0',
+              opacity: el.display === 'block' ? '100' : '0',
             }}
             // {...el.node.props}
             // {...el.funcs}

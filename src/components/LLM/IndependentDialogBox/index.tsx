@@ -7,7 +7,7 @@ export default function IndependentDialogBox() {
       <div className="left_part h-full">
         <IndependentLeftPart />
       </div>
-      <div className="right_part flex h-full flex-grow flex-col items-center justify-center gap-10">
+      <div className="right_part flex h-full flex-grow flex-col items-center justify-center gap-0">
         {/* <IndependentConversationHeader />
                 <div
                     ref={container}
