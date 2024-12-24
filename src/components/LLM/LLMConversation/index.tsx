@@ -4,7 +4,6 @@ import {
   useState,
   useImperativeHandle,
   RefObject,
-  Suspense,
 } from 'react';
 import LLMAnswer from '@/components/LLM/LLMAnswer';
 import LLMAsk from '@/components/LLM/LLMAsk';
@@ -19,11 +18,13 @@ import { LazyLoading } from '@/components/LoadingAnimation/LazyLoading';
 interface LLMConversationProps {
   streamChatRef: RefObject<(streamChats: StreamChat[]) => void | null>;
   userAddNewChatRef: RefObject<(newMessage: MessageObj) => void | null>;
+  setLoadingNewAnimation: RefObject<(loading: boolean) => void | null>;
 }
 
 export default function LLMConversation({
   streamChatRef,
   userAddNewChatRef,
+  setLoadingNewAnimation,
 }: LLMConversationProps) {
   const container = useRef<HTMLDivElement>(null);
   const conversation = useConversationStore((state) => state.conversation);
@@ -50,17 +51,22 @@ export default function LLMConversation({
         type: 'question',
       } as MessageObj;
       setMessages((prev) => [...prev, newMessage]);
+
+      setStartNew(true);
       const streamChats = await sendMsgByHook(
         conversation!.title,
         conversation!.details.id!,
         selectedBotId!.bot_id!,
       );
+      setStartNew(false);
+
       setNewChatContent(streamChats);
     }
   };
   const [newChatContent, setNewChatContent] = useState<StreamChat[] | null>(
     null,
   );
+  const [startNew, setStartNew] = useState(false);
 
   useEffect(() => {
     if (conversation) {
@@ -93,6 +99,10 @@ export default function LLMConversation({
     setMessages((prev) => [...prev, newMessage]);
   });
 
+  useImperativeHandle(setLoadingNewAnimation, () => (loading: boolean) => {
+    setStartNew(loading);
+  });
+
   useEffect(() => {
     return () => {
       setMessages([]);
@@ -116,13 +126,15 @@ export default function LLMConversation({
               <LLMAnswer key={index} content={message.content} />
             ),
           )}
-          {newChatContent && (
-            <LLMAnswer
-              streamChats={newChatContent}
-              setScrollBar={setScrollBar}
-              completeAddNewChat={completeAddNewChat}
-            />
-          )}
+          <LazyLoading loading={startNew}>
+            {newChatContent && (
+              <LLMAnswer
+                streamChats={newChatContent}
+                setScrollBar={setScrollBar}
+                completeAddNewChat={completeAddNewChat}
+              />
+            )}
+          </LazyLoading>
         </div>
       </LazyLoading>
     </div>

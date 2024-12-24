@@ -4,6 +4,8 @@ import UnoCSS from 'unocss/vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+const host = process.env.TAURI_DEV_HOST;
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -17,13 +19,12 @@ export default defineConfig({
         path.dirname(fileURLToPath(import.meta.url)),
         './node_modules',
       ),
-      '~@semi-bot': path.resolve(
-        path.dirname(fileURLToPath(import.meta.url)),
-        './node_modules/@semi-bot',
-      ),
     },
   },
   server: {
+    strictPort: true,
+    host: host || false,
+    port: 5173,
     proxy: {
       /* '/api': {
         target: 'https://api.pinnacle-primary.mjclouds.com',
@@ -39,11 +40,11 @@ export default defineConfig({
         target: 'https://www.coze.cn/api',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/authorisation/, ''),// { '^/authorisation': '' },
-        onProxyReq: (proxyReq: any, _req: any, _res: any) => {
+        /* onProxyReq: (proxyReq: any, _req: any, _res: any) => {
           // 添加必要的头信息以处理 CORS
           proxyReq.setHeader('Origin', 'https://www.coze.cn');
         },
-        onProxyRes: (proxyRes: any, req: any, res: any) => {
+        onProxyRes: (proxyRes: any, _req: any, _res: any) => {
           // 允许跨域请求
           proxyRes.headers['Access-Control-Allow-Origin'] = '*';
           proxyRes.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, PATCH, OPTIONS';
@@ -53,7 +54,7 @@ export default defineConfig({
           if (proxyRes.headers['location']) {
             proxyRes.headers['location'] = proxyRes.headers['location'].replace('https://www.coze.cn/sign', 'https://localhost:8000/sign');
           }
-        },
+        }, */
       },
       '/sign': {
         target: 'https://www.coze.cn/sign',
@@ -62,14 +63,15 @@ export default defineConfig({
       }
     },
   },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@import "~@semi-bot/semi-theme-pinnacle/scss/index.scss";`,
-        javascriptEnabled: true,
-        api: 'modern-compiler',
-        silenceDeprecations: ['legacy-js-api', 'import'],
-      },
-    },
+  build: {
+    // Tauri uses Chromium on Windows and WebKit on macOS and Linux
+    target:
+      process.env.TAURI_ENV_PLATFORM == 'windows'
+        ? 'chrome105'
+        : 'safari13',
+    // don't minify for debug builds
+    minify: !process.env.TAURI_ENV_DEBUG ? 'esbuild' : false,
+    // produce sourcemaps for debug builds
+    sourcemap: !!process.env.TAURI_ENV_DEBUG,
   },
 });

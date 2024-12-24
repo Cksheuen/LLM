@@ -1,8 +1,6 @@
-import { useLocation } from 'react-router-dom';
 import { useConversationStore } from '@/store/conversation';
 
 export default function IndependentConversationHeader() {
-  const location = useLocation();
   const conversation = useConversationStore((state) => state.conversation);
   return (
     <div className="flex items-center justify-center pt-5">

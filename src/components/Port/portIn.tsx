@@ -4,7 +4,6 @@ import {
   useEffect,
   useRef,
   cloneElement,
-  useState,
 } from 'react';
 import { usePortStore } from '@/store/port';
 import { isEqual, Pos } from '@/utils/math';

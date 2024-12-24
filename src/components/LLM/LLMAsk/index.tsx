@@ -1,6 +1,5 @@
 import LLMAvatar from '../LLMAvatar';
 import Content from '../../Content';
-import { marked } from 'marked';
 
 interface LLMAskProps {
   content: string;

@@ -2,13 +2,13 @@ import IndependentDialogBox from '@/components/LLM/IndependentDialogBox';
 import AuthorisationBtn from '@/components/AuthorisationBtn';
 import SpeechToText from '@/components/SpeechToText';
 import { useAuthorizationStore } from '@/store/authorisation';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import PortCarrier from '@/components/Port/portCarrier';
-import { useRecordStore } from '@/store/record';
+// import { useRecordStore } from '@/store/record';
 
 export default function Home() {
   const authorisation = useAuthorizationStore((state) => state.authorisation);
-  const recordStatus = useRecordStore((state) => state.status);
+  // const recordStatus = useRecordStore((state) => state.status);
 
   /* useEffect(() => {
     console.log(import.meta.env.PERSONAL_AUTH_TOKEN);

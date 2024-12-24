@@ -1,17 +1,11 @@
 import { useAuthorizationStore } from '@/store/authorisation';
 import { getAuthorisation, getAccessToken } from '@/api/authorisation';
-import {
-  generateCodeVerifier,
-  generateCodeChallenge,
-  verifier,
-  sha256,
-} from '@/utils/generateCode';
+import { generateCodeChallenge, verifier, sha256 } from '@/utils/generateCode';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 
 export default function AuthorisationBtn() {
   const location = useLocation();
-  const pathName = location.pathname;
   const authorisation = useAuthorizationStore((state) => state.authorisation);
   const code_verifier = useAuthorizationStore((state) => state.code_verifier);
   const setAuthorisation = useAuthorizationStore(
@@ -28,14 +22,14 @@ export default function AuthorisationBtn() {
       /* 
             grant_type: "authorization_code",
             code,
-            client_id: CLIENT_ID,
+            client_id: import.meta.env.VITE_CLIENT_ID,
             redirect_uri: "https://localhost:8000",
             code_verifier
             */
       console.log({
         code,
         code_verifier,
-        client_id: CLIENT_ID,
+        client_id: import.meta.env.VITE_CLIENT_ID,
         redirect_uri: 'https://localhost:8000',
         grant_type: 'authorization_code',
       });
@@ -44,7 +38,7 @@ export default function AuthorisationBtn() {
       console.log('getAccessToken', res);
     }
   };
-
+  /* 
   function test() {
     // 生成 code_verifier
     const code_verifier = verifier();
@@ -63,7 +57,7 @@ export default function AuthorisationBtn() {
 
     console.log('SHA-256 哈希结果:', hash);
   }
-
+ */
   useEffect(() => {
     // test()
     const searchParams = new URLSearchParams(location.search);

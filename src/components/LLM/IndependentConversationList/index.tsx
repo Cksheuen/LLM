@@ -12,7 +12,6 @@ interface IndependentConversationListProps {
 export default function IndependentConversationList({
   conversations,
   delConversation,
-  initialLoad,
 }: IndependentConversationListProps) {
   const navigate = useNavigate();
   const location = useLocation();

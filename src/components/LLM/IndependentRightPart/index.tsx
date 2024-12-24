@@ -18,6 +18,7 @@ export default function IndependentRightPart() {
   const selectedBotId = useConversationStore((state) => state.selectedBotId);
   const sendMsgByHook = UseCreateConversation().sendMessage;
   const generateMessageObj = UseCreateConversation().generateMessageObj;
+  const setNewStartAnimation = useRef<(start: boolean) => void | null>(null);
 
   useEffect(() => {
     if (container.current) {
@@ -34,13 +35,18 @@ export default function IndependentRightPart() {
       selectedBotId!.bot_id!,
     );
 
-    userAddNewChatRef.current?.(messageObj);
+    userAddNewChatRef.current?.(messageObj as MessageObj);
 
+    setNewStartAnimation.current?.(true);
+    const content = textarea.value;
+    textarea.value = '';
     const streamChats = await sendMsgByHook(
-      textarea.value,
+      content,
       conversation!.details.id!,
       selectedBotId!.bot_id!,
     );
+
+    setNewStartAnimation.current?.(false);
 
     streamChatRef.current?.(streamChats);
   };
@@ -54,6 +60,7 @@ export default function IndependentRightPart() {
       <LLMConversation
         streamChatRef={streamChatRef}
         userAddNewChatRef={userAddNewChatRef}
+        setLoadingNewAnimation={setNewStartAnimation}
       />
       {/* </div> */}
 

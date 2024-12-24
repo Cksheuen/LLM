@@ -1,10 +1,14 @@
-import { useAuthorizationStore } from '@/store/authorisation'
 import { CommonResponse } from '@/type.d/request.wrapper';
 import axios from 'axios';
+// import axiosTauriApiAdapter from 'axios-tauri-api-adapter';
+// import axiosTauriAdapter from 'axios-tauri-adapter';
+
+// axios.defaults.adapter = axiosTauriAdapter;
 
 export const instance = axios.create({
   baseURL: '/api',
   timeout: 30000,
+  // adapter: axiosTauriAdapter
 });
 
 instance.interceptors.request.use(

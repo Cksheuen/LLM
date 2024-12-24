@@ -1,13 +1,6 @@
 import { usePortStore } from '@/store/port';
-import { Pos } from '@/utils/math';
 import { Timeout } from 'ahooks/lib/useRequest/src/types';
-import React, {
-  useEffect,
-  useRef,
-  ReactNode,
-  createElement,
-  useState,
-} from 'react';
+import { useEffect, useRef, ReactNode, useState } from 'react';
 
 interface RecordProps {
   children: ReactNode;
@@ -20,7 +13,7 @@ export default function PortCarrier({ children, ...props }: RecordProps) {
   const closeIndex = usePortStore((state) => state.closeIndex);
   const update = usePortStore((state) => state.update);
   const finishUpdate = usePortStore((state) => state.finishUpdate);
-  const elsContainer = useRef<HTMLDivElement>();
+  const elsContainer = useRef<HTMLDivElement | null>(null);
 
   /* useEffect(() => {
     for (const el of elMaps) {

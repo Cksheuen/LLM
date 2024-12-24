@@ -1,7 +1,7 @@
-import moonFragmentShaderUrl from './moon/frag.glsl'
-import moonVertexShaderUrl from './moon/vert.glsl'
-import terrainFragmentShaderUrl from './terrain/frag.glsl'
-import terrainVertexShaderUrl from './terrain/vert.glsl'
+import moonFragmentShaderUrl from './moon/frag.glsl?raw'
+import moonVertexShaderUrl from './moon/vert.glsl?raw'
+import terrainFragmentShaderUrl from './terrain/frag.glsl?raw'
+import terrainVertexShaderUrl from './terrain/vert.glsl?raw'
 
 interface ShaderSource {
     vertex: string,

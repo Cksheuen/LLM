@@ -2,12 +2,15 @@ import PortIn from '@/components/Port/portIn';
 import { usePortStore } from '@/store/port';
 import { useRecordStore } from '@/store/record';
 import { useState, useRef, useEffect } from 'react';
+import { BasicInput } from '../LLM/DialogInput';
 
 export default function SpeechToText() {
   const recordStatus = useRecordStore((state) => state.status);
   const updateRecordStatus = useRecordStore((state) => state.updateStatus);
+  const updateRecordContent = useRecordStore(
+    (state) => state.updateRecordContent,
+  );
   const activePort = usePortStore((state) => state.activePort);
-  const closePort = usePortStore((state) => state.closePort);
 
   const [startRecording, setStartRecording] = useState(false);
   const recognition = useRef<any>(null);
@@ -27,15 +30,12 @@ export default function SpeechToText() {
     recognition.current.onresult = (event: any) => {
       // console.log('onresult', event);
 
-      let interimTranscript = '';
       let finalTranscript = '';
 
       for (let i = 0; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
           finalTranscript += transcript;
-        } else {
-          interimTranscript += transcript;
         }
       }
       console.log('finalTranscript', finalTranscript);
@@ -57,7 +57,7 @@ export default function SpeechToText() {
 
   const startRecord = () => {
     console.log('startRecord');
-
+    setSpeech(null);
     recognition.current.start();
   };
 
@@ -81,11 +81,30 @@ export default function SpeechToText() {
   const handleClose = () => {
     setStartRecording(false);
     updateRecordStatus(false);
-    activePort('record', 1);
+    activePort('record');
     setTimeout(() => {
-      activePort('record', 0);
+      activePort('record');
     }, 10);
   };
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (textareaRef.current && speech) {
+      textareaRef.current.value = speech;
+    }
+  }, [speech]);
+
+  const handleApply = () => {
+    updateRecordContent(textareaRef.current!.value);
+    handleClose();
+  };
+
+  useEffect(() => {
+    return () => {
+      recognition.current.stop();
+    };
+  }, []);
 
   return (
     recordStatus && (
@@ -120,6 +139,29 @@ export default function SpeechToText() {
               {speech}
             </div>
           </div>
+          {speech && (
+            <div className="">
+              <div className="my-5 text-center">
+                {/* <input type="text" value={speech} className="" /> */}
+                <BasicInput textareaRef={textareaRef} />
+              </div>
+
+              <div className="flex items-center justify-center gap-5">
+                <div
+                  className="bg-gray-5 hover:bg-gray-7 btn"
+                  onClick={() => handleApply()}
+                >
+                  Apply
+                </div>
+                <div
+                  className="bg-gray-5 hover:bg-gray-7 btn"
+                  onClick={() => handleClose()}
+                >
+                  Cancel
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )

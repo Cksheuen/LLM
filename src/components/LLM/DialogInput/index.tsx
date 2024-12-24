@@ -1,13 +1,61 @@
-import { useRef, useEffect, useState } from 'react';
+import {
+  useRef,
+  useEffect,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import { getRemValue } from '@/utils/style';
-import { createMessage } from '@/api/message';
-import { createChat, createChatStream } from '@/api/chat';
 import { getPublishedBotsList } from '@/api/bot';
 import { useConversationStore } from '@/store/conversation';
 import style from './index.module.css';
 import { PublishedBotsList } from '@/type.d/space';
-import { CreateChatParams, StreamChat } from '@/type.d/chat';
 import SpeechToTextIcon from '../../SpeechToText/icon';
+import { useRecordStore } from '@/store/record';
+
+interface BasicInputProps {
+  textareaRef: React.RefObject<HTMLTextAreaElement>;
+}
+
+export const BasicInput = forwardRef<HTMLTextAreaElement, BasicInputProps>(
+  ({ textareaRef }, ref) => {
+    // const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    useImperativeHandle(ref, () => textareaRef.current!);
+
+    useEffect(() => {
+      const textarea = textareaRef.current;
+      if (textarea) {
+        const handleInput = () => {
+          textarea.style.height = 'auto';
+          let line;
+          if (textarea.scrollHeight % getRemValue() === 0) {
+            line = textarea.scrollHeight / getRemValue();
+          } else {
+            line = Math.floor(textarea.scrollHeight / getRemValue()) + 1;
+          }
+          textarea.style.height = `${line}rem`;
+          // console.log('textarea.scrollHeight', textarea.scrollHeight);
+        };
+
+        textarea.addEventListener('input', handleInput);
+
+        return () => {
+          textarea.removeEventListener('input', handleInput);
+        };
+      }
+    }, []);
+
+    return (
+      <textarea
+        ref={textareaRef}
+        className={`pr-15 rd-3 bg-gray-5 text-4 border-gray-6 focus-visible:ring-gray-7 text-gray-3 placeholder-gray-4 inline-block max-h-40 w-full resize-none overflow-y-auto border-solid p-3 pb-10 shadow-md focus-visible:outline-none focus-visible:ring-1 ${style.scroll_bar}`}
+        placeholder="Type a message"
+        rows={1}
+      />
+    );
+  },
+);
 
 interface DialogInputProps {
   sendMessage: (textarea: HTMLTextAreaElement) => void;
@@ -15,7 +63,6 @@ interface DialogInputProps {
 
 export default function DialogInput({ sendMessage }: DialogInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const conversation = useConversationStore((state) => state.conversation);
   const selectedBotId = useConversationStore((state) => state.selectedBotId);
   const setBotId = useConversationStore((state) => state.setBotId);
   const [publishedBots, setPublishedBots] = useState<PublishedBotsList | null>(
@@ -29,46 +76,29 @@ export default function DialogInput({ sendMessage }: DialogInputProps) {
   };
 
   useEffect(() => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      const handleInput = () => {
-        textarea.style.height = 'auto';
-        let line;
-        if (textarea.scrollHeight % getRemValue() === 0) {
-          line = textarea.scrollHeight / getRemValue();
-        } else {
-          line = Math.floor(textarea.scrollHeight / getRemValue()) + 1;
-        }
-        textarea.style.height = `${line}rem`;
-        // console.log('textarea.scrollHeight', textarea.scrollHeight);
-      };
-
-      textarea.addEventListener('input', handleInput);
-
-      return () => {
-        textarea.removeEventListener('input', handleInput);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
     setBotsSelect();
   }, []);
 
+  const recordContent = useRecordStore((state) => state.recordContent);
+  const updateRecordContent = useRecordStore(
+    (state) => state.updateRecordContent,
+  );
+  useEffect(() => {
+    if (textareaRef.current && recordContent) {
+      textareaRef.current.value = recordContent;
+    }
+    updateRecordContent(null);
+  }, [recordContent]);
+
   return (
     <div className="text-gray-3 relative mx-auto w-full max-w-4xl p-5">
-      <textarea
-        ref={textareaRef}
-        className={`pr-15 rd-3 bg-gray-5 text-4 border-gray-6 focus-visible:ring-gray-7 text-gray-3 placeholder-gray-4 inline-block max-h-40 w-full resize-none overflow-y-auto border-solid p-3 pb-10 shadow-md focus-visible:outline-none focus-visible:ring-1 ${style.scroll_bar}`}
-        placeholder="Type a message"
-        rows={1}
-      />
+      <BasicInput textareaRef={textareaRef} />
       <div
         className={`${style.pSelect} rd-2 bg-gray-4 text-gray-3 hover:bg-gray-4 hover:rd-t-none absolute relative bottom-5 left-2 inline-block cursor-pointer border-none px-3 py-1 shadow-md transition-all focus-visible:outline-none`}
       >
         {selectedBotId ? selectedBotId.bot_name : 'Select Bot'}
         <div
-          className={`${style.pOptions} rd-t rd-r absolute bottom-5 left-0 my-1 flex flex-col items-center justify-center overflow-hidden transition-all ${style.animate_back_in_up} bg-gray-6`}
+          className={`${style.pOptions} rd-t rd-r bg-gray-6 absolute bottom-5 left-0 my-1 flex flex-col items-center justify-center overflow-hidden transition-all`}
         >
           {publishedBots?.space_bots.map((bot, index) => (
             <div

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { usePortStore } from '@/store/port';
 import { useRecordStore } from '@/store/record';
 import PortIn from '../Port/portIn';
@@ -6,13 +6,10 @@ import PortIn from '../Port/portIn';
 export default function SpeechToTextIcon() {
   const status = usePortStore((state) => state.status);
   const setNewPos = usePortStore((state) => state.setNewPos);
-  const updateStatus = usePortStore((state) => state.updateStatus);
   const activePort = usePortStore((state) => state.activePort);
 
   const updateRecordStatus = useRecordStore((state) => state.updateStatus);
   const el = useRef<HTMLDivElement>(null);
-
-  const [speech, setSpeech] = useState<string | null>();
 
   const init = () => {
     if (el.current) {
@@ -57,9 +54,9 @@ export default function SpeechToTextIcon() {
         className="i-carbon-microphone hover:text-gray-1 cursor-pointer"
         onClick={() => {
           updateRecordStatus(true);
-          activePort('record', 0);
+          activePort('record');
           setTimeout(() => {
-            activePort('record', 1);
+            activePort('record');
           }, 10);
         }}
         ref={el}

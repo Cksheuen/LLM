@@ -4,6 +4,7 @@ import { useConversationListStore } from '@/store/conversationList';
 import { StreamChat, CreateChatParams } from '@/type.d/chat';
 import { createChatStream } from '@/api/chat';
 import { useNavigate } from 'react-router-dom';
+import ConversationListEl from '@/type.d/Conversation';
 
 export function UseCreateConversation() {
     const setConversation = useConversationStore((state) => state.setConversation)
@@ -26,7 +27,7 @@ export function UseCreateConversation() {
             del: false,
             add: true,
             id: res.data.id
-        };
+        } as ConversationListEl;
 
         addNewConversationEl(newConversationEl);
         navigate(`/${res.data.id}`);

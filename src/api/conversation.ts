@@ -1,5 +1,5 @@
 import { post } from "./request";
-import { CreateConversationData, ConversationObj, ConversationCreateResponse } from '@/type.d/Conversation';
+import { CreateConversationData, ConversationObj } from '@/type.d/Conversation';
 
 export const createConversation = (data?: CreateConversationData) =>
     post<ConversationObj>('/v1/conversation/create', data);

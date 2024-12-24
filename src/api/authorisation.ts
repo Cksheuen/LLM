@@ -1,5 +1,3 @@
-import { post } from "./authorisationRequest";
-
 interface GetAuthorisationProps {
     state: string
     codeChallenge: string
@@ -11,7 +9,7 @@ export const getAuthorisation = async ({
     const redirect_uri = 'https://localhost:8000'
     /* const codeVerifier = generateCodeVerifier();
     const codeChallenge = generateCodeChallenge(codeVerifier); */
-    const res = await fetch(`/authorisation/permission/oauth2/authorize?response_type=code&client_id=${CLIENT_ID}
+    const res = await fetch(`/authorisation/permission/oauth2/authorize?response_type=code&client_id=${import.meta.env.VITE_CLIENT_ID}
         &redirect_uri=${redirect_uri}&state=${state}
         &code_challenge=${codeChallenge}&code_challenge_method=S256`,
         {
@@ -33,7 +31,7 @@ interface GetAccessTokenProps {
 export const getAccessToken = async ({
     code, code_verifier
 }: GetAccessTokenProps) => {
-    const res = await fetch(`/authorisation/permission/oauth2/token`,{
+    const res = await fetch(`/authorisation/permission/oauth2/token`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json"
@@ -42,38 +40,11 @@ export const getAccessToken = async ({
             grant_type: "authorization_code",
             code,
             redirect_uri: "https://localhost:8000",
-            client_id: CLIENT_ID,
+            client_id: import.meta.env.VITE_CLIENT_ID,
             code_verifier
-        })  
+        })
     })
     return res
-    // const CLIENT_ID = "56219448104691175666209112478987.app.coze";
-    const REDIRECT_URI = "https://localhost:8000";
-    const URL = "https://api.coze.cn/api/permission/oauth2/token";
-
-    const headers = {
-        "Content-Type": "application/json"
-    };
-
-    const body = {
-        grant_type: "authorization_code",
-        code,
-        redirect_uri: REDIRECT_URI,
-        client_id: CLIENT_ID,
-        code_verifier
-    };
-
-    const requestOptions = {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body)
-    };
-
-    const headersString = Object.entries(headers)
-        .map(([key, value]) => `"${key}"="${value}"`)
-        .join("; ");
-
-    console.log(`Invoke-WebRequest -Uri "${URL}" -Method Post -Headers @{${headersString}} -Body '${JSON.stringify(body)}'`);
 }
 /*  post(
 "/permission/oauth2/token",
@@ -81,7 +52,7 @@ export const getAccessToken = async ({
     grant_type: "authorization_code",
     code,
     redirect_uri: "https://localhost:8000",
-    client_id: CLIENT_ID,
+    client_id: import.meta.env.VITE_CLIENT_ID,
     code_verifier
 }
 ) */

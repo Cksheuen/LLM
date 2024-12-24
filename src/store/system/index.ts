@@ -1,4 +1,3 @@
-import { setLocale } from 'react-router-dom';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 
@@ -16,7 +15,6 @@ export const useSystemStore = create<SystemState>()(
         lang: 'zh-CN',
         menuOpenKeys: [],
         setLang: (lang: string) => {
-          setLocale(lang, false);
           set({ lang });
         },
         setMenuOpenKeys: (menuOpenKeys: Array<string | number>) => {
