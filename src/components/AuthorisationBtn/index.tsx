@@ -138,11 +138,9 @@ function SetAuthorisationSelf() {
   const setAuthorisation = useAuthorizationStore(
     (state) => state.setAuthorisation,
   );
-  const setInstanceAuthorisation = UseAuthorisation().setInstanceAuthorisation;
 
   const ToSetInstanceAuthorisation = () => {
     setAuthorisation(textAreaRef.current!.value);
-    setInstanceAuthorisation(textAreaRef.current!.value);
   };
   return (
     <div className="">
