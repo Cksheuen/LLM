@@ -1,0 +1,16 @@
+{
+    "rewrites": [
+        {
+            "source": "/api",
+            "destination": "https://api.coze.cn"
+        },
+        {
+            "source": "/authorisation",
+            "destination": "https://www.coze.cn/api"
+        },
+        {
+            "source": "/sign",
+            "destination": "https://www.coze.cn/sign"
+        }
+    ]
+}
