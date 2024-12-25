@@ -1,5 +1,6 @@
 import { CommonResponse } from '@/type.d/request.wrapper';
 import axios from 'axios';
+import { useAuthorizationStore } from '@/store/authorisation';
 // import axiosTauriApiAdapter from 'axios-tauri-api-adapter';
 // import axiosTauriAdapter from 'axios-tauri-adapter';
 
@@ -11,13 +12,15 @@ export const instance = axios.create({
   // adapter: axiosTauriAdapter
 });
 
+
 instance.interceptors.request.use(
   (config: any) => {
-    /* const token = useAuthorizationStore.getState().authorisation;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    } */
-    config.headers.Authorization = `Bearer ${import.meta.env.VITE_PERSONAL_AUTH_TOKEN}`;
+    // const token = useAuthorizationStore.getState().authorisation;
+    // if (token) {
+    //   config.headers.Authorization = `Bearer ${token}`;
+    // }
+    const authorisation = useAuthorizationStore.getState().authorisation;
+    config.headers.Authorization = `Bearer ${import.meta.env.VITE_PERSONAL_AUTH_TOKEN || authorisation}`;
     return config;
   },
   function (error: any) {

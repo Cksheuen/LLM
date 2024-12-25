@@ -2,9 +2,10 @@ import { useAuthorizationStore } from '@/store/authorisation';
 import { getAuthorisation, getAccessToken } from '@/api/authorisation';
 import { generateCodeChallenge, verifier, sha256 } from '@/utils/generateCode';
 import { useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { BasicInput } from '@/components/LLM/DialogInput';
 
-export default function AuthorisationBtn() {
+function ApplyForAuthorisationBtn() {
   const location = useLocation();
   const authorisation = useAuthorizationStore((state) => state.authorisation);
   const code_verifier = useAuthorizationStore((state) => state.code_verifier);
@@ -101,15 +102,12 @@ export default function AuthorisationBtn() {
     }
   };
   return (
-    <div className="text-gray-9 absolute flex h-full w-full items-center justify-center">
-      <div className="bg-gray-4 op-80 absolute z-10 h-full w-full"></div>
-      <div className="bg-gray-5 op-100 relative z-20 flex h-40 w-80 flex-col items-center justify-center gap-3">
-        AuthorisationBtn
-        <div onClick={requestAuthorisation} className="btn bg-gray-6">
-          申请权限
-        </div>
-        <div>{authorisation ? 'Authorised' : 'Not Authorised'}</div>
+    <div className="flex flex-col items-center justify-center gap-3">
+      AuthorisationBtn
+      <div onClick={requestAuthorisation} className="btn bg-gray-6">
+        申请权限
       </div>
+      <div>{authorisation ? 'Authorised' : 'Not Authorised'}</div>
     </div>
   );
 }
@@ -134,3 +132,70 @@ $response | ConvertTo-Json -Depth 10
 
 
 */
+
+function SetAuthorisationSelf() {
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+  const setAuthorisation = useAuthorizationStore(
+    (state) => state.setAuthorisation,
+  );
+  const setInstanceAuthorisation = UseAuthorisation().setInstanceAuthorisation;
+
+  const ToSetInstanceAuthorisation = () => {
+    setAuthorisation(textAreaRef.current!.value);
+    setInstanceAuthorisation(textAreaRef.current!.value);
+  };
+  return (
+    <div className="">
+      <BasicInput textareaRef={textAreaRef} />
+      <div
+        onClick={() => ToSetInstanceAuthorisation()}
+        className="bg-gray-6 rd-1 hover:bg-gray-7 text-gray-4 hover:text-gray-3 mx-10 mt-3 cursor-pointer py-1 text-center transition-all"
+      >
+        set
+      </div>
+    </div>
+  );
+}
+
+const nodes = [
+  {
+    name: 'Personal',
+    el: <SetAuthorisationSelf />,
+  },
+  {
+    name: 'Apply for',
+    el: <ApplyForAuthorisationBtn />,
+  },
+];
+
+export default function AuthorisationBtn() {
+  const [nowChoose, setNowChoose] = useState<number>(0);
+  return (
+    <div className="text-gray-9 absolute flex h-full w-full flex-col items-center justify-center">
+      <div className="bg-gray-4 op-80 absolute z-10 h-full w-full"></div>
+      <div className="op-100 text-gray-9 bg-gray-6 rd-1 z-20 m-3 flex flex-col items-center justify-center gap-5 p-5 pb-3">
+        <div className="flex items-center justify-center gap-5">
+          {nodes.map((node, index) => (
+            <div
+              className={`hover:text-gray-5 cursor-pointer transition-all ${
+                index === nowChoose ? 'text-blue-5' : 'text-gray-2'
+              }`}
+              onClick={() => setNowChoose(index)}
+            >
+              {node.name}
+            </div>
+          ))}
+          <div
+            key={nodes[nowChoose].name}
+            className={`bg-gray-5 op-100 rd-1 animate-fade-in-down animate-duration-300 relative z-20 flex w-80 flex-col items-center justify-center p-5 transition-all`}
+          >
+            {nodes[nowChoose].el}
+          </div>
+        </div>
+        <div className="text-gray-3 text-xs font-thin">
+          暂无 coze Auth token / 访问权限，请设置或申请
+        </div>
+      </div>
+    </div>
+  );
+}
