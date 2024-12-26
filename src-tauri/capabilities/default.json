@@ -6,8 +6,9 @@
     "main"
   ],
   "permissions": [
+    "core:default",
     {
-      "identifier": "core:default",
+      "identifier": "http:default",
       "allow": [
         {
           "url": "https://*.tauri.app"
